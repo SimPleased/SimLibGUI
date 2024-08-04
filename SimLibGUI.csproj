@@ -1,0 +1,115 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{DE60CE0F-5390-4C1E-96E9-BA88F982E753}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>SimLibGUI</RootNamespace>
+    <AssemblyName>SimLibGUI</AssemblyName>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <Deterministic>true</Deterministic>
+    <LangVersion>8.0</LangVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Plugin.cs" />
+    <Compile Include="SimGUI.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+
+  <!-- Define the GameName. You can override this by setting the GameName property when building. -->
+  <PropertyGroup>
+    <GameName Condition="'$(GameName)' == ''">ENTER GAME NAME HERE</GameName>
+  </PropertyGroup>
+
+  <!-- Define platform-specific paths -->
+  <Choose>
+    <When Condition="$([MSBuild]::IsOSPlatform('Windows'))">
+      <PropertyGroup>
+        <SteamPath>C:\Program Files (x86)\Steam</SteamPath>
+      </PropertyGroup>
+    </When>
+    <When Condition="$([MSBuild]::IsOSPlatform('OSX'))">
+      <PropertyGroup>
+        <SteamPath>$(HOME)/Library/Application Support/Steam</SteamPath>
+      </PropertyGroup>
+    </When>
+    <When Condition="$([MSBuild]::IsOSPlatform('Linux'))">
+      <PropertyGroup>
+        <SteamPath>$(HOME)/.local/share/Steam</SteamPath>
+      </PropertyGroup>
+    </When>
+    <Otherwise>
+      <PropertyGroup>
+        <SteamPath>PATH_TO_STEAM</SteamPath>
+      </PropertyGroup>
+    </Otherwise>
+  </Choose>
+
+  <!-- Reference paths -->
+  <PropertyGroup>
+    <GamePath>$(SteamPath)\steamapps\common\$(GameName)</GamePath>
+    <BepInExPath>$(GamePath)\BepInEx\core</BepInExPath>
+    <UnityEnginePath>$(GamePath)\$(GameName)_Data\Managed</UnityEnginePath>
+  </PropertyGroup>
+
+  <!-- BepInEx and Unity references -->
+  <ItemGroup>
+    <Reference Include="0Harmony" Condition="Exists('$(BepInExPath)\0Harmony.dll')">
+      <HintPath>$(BepInExPath)\0Harmony.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="BepInEx" Condition="Exists('$(BepInExPath)\BepInEx.dll')">
+      <HintPath>$(BepInExPath)\BepInEx.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="UnityEngine" Condition="Exists('$(UnityEnginePath)\UnityEngine.dll')">
+      <HintPath>$(UnityEnginePath)\UnityEngine.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="UnityEngine.CoreModule" Condition="Exists('$(UnityEnginePath)\UnityEngine.CoreModule.dll')">
+      <HintPath>$(UnityEnginePath)\UnityEngine.CoreModule.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="UnityEngine.IMGUIModule" Condition="Exists('$(UnityEnginePath)\UnityEngine.IMGUIModule.dll')">
+      <HintPath>$(UnityEnginePath)\UnityEngine.IMGUIModule.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="UnityEngine.TextRenderingModule" Condition="Exists('$(UnityEnginePath)\UnityEngine.TextRenderingModule.dll')">
+      <HintPath>$(UnityEnginePath)\UnityEngine.TextRenderingModule.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+  </ItemGroup>
+
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>
